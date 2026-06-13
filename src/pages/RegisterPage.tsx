@@ -1,5 +1,5 @@
 import { BaseProps } from '../types';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import TopNavBar from '../components/TopNavBar';
 import { registerUser } from '../auth';
 

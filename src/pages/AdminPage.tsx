@@ -15,7 +15,7 @@ import {
   LogOut,
   Calendar,
   MoreHorizontal,
-  Box
+  Archive
 } from 'lucide-react';
 
 type AdminTab = 'overview' | 'menu' | 'orders';
@@ -209,7 +209,7 @@ function DashboardTab() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
         <div className="bg-[#f8f5f2] border border-[#eee9e0] rounded-3xl p-8 flex items-start gap-6">
           <div className="w-16 h-16 rounded-2xl bg-white shadow-sm flex items-center justify-center shrink-0">
-            <Box size={24} className="text-[#1a1a1a]" />
+            <Archive size={24} className="text-[#1a1a1a]" />
           </div>
           <div>
             <h3 className="text-xl font-bold mb-2">Inventory Low</h3>

@@ -65,7 +65,7 @@ export default function LandingPage({ onNavigate }: BaseProps) {
             <div className="w-full md:w-1/2">
               <div className="rounded-[2.5rem] overflow-hidden aspect-square">
                 <img 
-                  src="https://images.unsplash.com/photo-1552346765-680c44c5cdca?q=80&w=2669&auto=format&fit=crop" 
+                  src="https://images.unsplash.com/photo-1611162458324-aae1eb4129a4?q=80&w=2669&auto=format&fit=crop" 
                   alt="Industrial roastery interior" 
                   className="w-full h-full object-cover opacity-80"
                 />
