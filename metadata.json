@@ -1,0 +1,6 @@
+{
+  "name": "Koda Coffee",
+  "description": "Editorial style coffee roasting application with an Artistic Flair theme.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

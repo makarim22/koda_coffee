@@ -1,0 +1,67 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Playfair Display", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  
+  --font-inter: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-playfair: "Playfair Display", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+
+  --color-primary: #1a1a1a;
+  --color-on-primary: #f2f0ea;
+  --color-secondary: #c5a059;
+  --color-on-secondary: #ffffff;
+  --color-tertiary: #d1cec1;
+  --color-on-tertiary: #1a1a1a;
+  
+  --color-surface: #f2f0ea;
+  --color-on-surface: #1a1a1a;
+  --color-surface-variant: #e8e4d8;
+  --color-on-surface-variant: #1a1a1a;
+  
+  --color-background: #f2f0ea;
+  --color-on-background: #1a1a1a;
+  
+  --color-outline: #1a1a1a;
+  --color-outline-variant: rgba(26, 26, 26, 0.1);
+  --color-border-subtle: rgba(26, 26, 26, 0.1);
+  --color-surface-container-low: #f2f0ea;
+  --color-surface-container: #e8e4d8;
+  --color-surface-container-high: #d1cec1;
+  
+  --color-canvas: #f2f0ea;
+  --color-text-muted: rgba(26, 26, 26, 0.7);
+  --color-inverse-surface: #1a1a1a;
+}
+
+@layer utilities {
+  .vertical-text {
+    writing-mode: vertical-rl;
+  }
+}
+
+body {
+  font-family: 'Playfair Display', serif;
+  background-color: var(--color-background);
+  color: var(--color-on-background);
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+}
+
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }

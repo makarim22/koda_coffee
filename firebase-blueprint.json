@@ -1,0 +1,22 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "User Profile",
+      "description": "Information about a user.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "Auth ID of the user." },
+        "name": { "type": "string", "description": "Full name of the user." },
+        "email": { "type": "string", "description": "Email address." },
+        "createdAt": { "type": "number", "description": "Timestamp of creation." }
+      },
+      "required": ["userId", "name", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "User profiles stored by their uid."
+    }
+  }
+}
