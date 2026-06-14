@@ -1,9 +1,9 @@
 import { BaseProps } from '../types';
 import React, { useState } from 'react';
 import TopNavBar from '../components/TopNavBar';
-import { registerUser } from '../auth';
+import { registerUser, logoutUser } from '../auth';
 
-export default function RegisterPage({ onNavigate }: BaseProps) {
+export default function RegisterPage({ onNavigate, cart }: BaseProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -18,7 +18,8 @@ export default function RegisterPage({ onNavigate }: BaseProps) {
     
     try {
       await registerUser(name, email, password);
-      onNavigate('landing');
+      await logoutUser();
+      onNavigate('login');
     } catch (err: any) {
       setError(err.message || 'Failed to register account.');
     } finally {
@@ -32,7 +33,7 @@ export default function RegisterPage({ onNavigate }: BaseProps) {
       <div className="absolute top-0 right-0 translate-x-1/3 -translate-y-1/3 w-[60rem] h-[60rem] rounded-full bg-[#e8e4d8] -z-10 opacity-70 blur-2xl"></div>
 
       <div className="fixed top-0 w-full z-50">
-        <TopNavBar onNavigate={onNavigate} activeRoute="register" />
+        <TopNavBar onNavigate={onNavigate} activeRoute="register" cart={cart} />
       </div>
 
       <main className="relative z-10 w-full max-w-7xl mx-auto flex flex-col md:flex-row gap-16 md:gap-32 items-center px-6 md:px-12 pt-32">

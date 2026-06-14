@@ -1,49 +1,88 @@
 rules_version = '2';
-
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Global Safety Net
     match /{document=**} {
       allow read, write: if false;
     }
 
-    function isValidId(id) {
-      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
-    }
-    function incoming() { return request.resource.data; }
-    function existing() { return resource.data; }
     function isSignedIn() { return request.auth != null; }
+    function isAdmin() { 
+      // Simplified: Allow admin access if user has admin record. We also bootstrapped via email
+      return isSignedIn() && (request.auth.token.email == 'admin@koda.com' || exists(/databases/$(database)/documents/admins/$(request.auth.uid)));
+    }
+    function existing() { return resource.data; }
+    function incoming() { return request.resource.data; }
 
-    // User Profile Validation
-    function isValidUserProfile(data) {
-      return data.keys().hasAll(['userId', 'name', 'createdAt']) &&
-        data.keys().size() >= 3 &&
-        data.keys().size() <= 4 &&
-        data.userId is string && data.userId.size() <= 128 &&
-        data.name is string && data.name.size() <= 100 &&
-        data.createdAt is number &&
-        (
-          !('email' in data.keys()) ||
-          (data.email is string && data.email.size() <= 200)
-        ) &&
-        data.userId == request.auth.uid;
+    function isValidMenuItem(data) {
+      return data.keys().hasAll(['title', 'origin', 'process', 'price', 'desc', 'img', 'delay', 'category'])
+             && data.title is string && data.title.size() > 0 && data.title.size() <= 100
+             && data.origin is string && data.origin.size() <= 100
+             && data.process is string && data.process.size() <= 100
+             && data.price is string && data.price.size() <= 20
+             && data.desc is string && data.desc.size() <= 500
+             && data.img is string && data.img.size() <= 1000
+             && data.delay is string && data.delay.size() <= 20
+             && data.category in ['espresso', 'pourOver', 'coldBrew', 'pastries'];
+    }
+
+    function isValidOrder(data) {
+      return data.keys().hasAll(['customerName', 'itemsSummary', 'totalPrice', 'status', 'priority'])
+             && data.customerName is string && data.customerName.size() <= 100
+             && data.itemsSummary is string && data.itemsSummary.size() <= 500
+             && data.totalPrice is string && data.totalPrice.size() <= 20
+             && data.status in ['PENDING', 'ROASTING', 'READY', 'DELIVERED']
+             && data.priority in ['NORMAL', 'URGENT'];
+    }
+
+    function isValidUser(data) {
+      return data.keys().hasAll(['userId', 'name', 'email', 'createdAt'])
+             && data.userId is string && data.userId.size() <= 128
+             && data.name is string && data.name.size() <= 100
+             && data.email is string && data.email.size() <= 100
+             && data.createdAt is number;
+    }
+
+    function isValidWishlistItem(data) {
+      return data.keys().hasAll(['itemId', 'addedAt'])
+             && data.itemId is string && data.itemId.size() <= 128
+             && data.addedAt is number;
     }
 
     match /users/{userId} {
-      allow read: if isSignedIn() && request.auth.uid == userId;
+      allow get: if isSignedIn() && request.auth.uid == userId || isAdmin();
+      allow list: if isAdmin();
+      allow create: if isSignedIn() && request.auth.uid == userId && isValidUser(incoming());
+      allow update: if isSignedIn() && request.auth.uid == userId && isValidUser(incoming()) && incoming().userId == existing().userId;
+      allow delete: if isAdmin();
+      
+      match /wishlist/{itemId} {
+        allow read: if isSignedIn() && request.auth.uid == userId;
+        allow create: if isSignedIn() && request.auth.uid == userId && isValidWishlistItem(incoming()) && incoming().itemId == itemId;
+        allow delete: if isSignedIn() && request.auth.uid == userId;
+      }
+      
+      match /addresses/{addressId} {
+        allow read, write: if isSignedIn() && request.auth.uid == userId;
+      }
+    }
 
-      allow create: if isSignedIn() &&
-        isValidId(userId) &&
-        request.auth.uid == userId &&
-        isValidUserProfile(incoming());
+    match /menuItems/{menuItemId} {
+      allow read: if true;
+      allow create: if isValidMenuItem(incoming());
+      allow update: if isValidMenuItem(incoming());
+      allow delete: if isAdmin();
+    }
 
-      allow update: if isSignedIn() &&
-        isValidId(userId) &&
-        request.auth.uid == userId &&
-        isValidUserProfile(incoming()) &&
-        incoming().diff(existing()).affectedKeys().hasOnly(['name']) &&
-        incoming().userId == existing().userId &&
-        incoming().createdAt == existing().createdAt;
+    match /orders/{orderId} {
+      allow read: if true;
+      allow create: if isValidOrder(incoming());
+      allow update: if isValidOrder(incoming());
+      allow delete: if isAdmin();
+    }
+    
+    match /admins/{adminId} {
+      allow read: if isAdmin();
+      allow write: if false; // Only assignable manually via console
     }
   }
 }

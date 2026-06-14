@@ -1,22 +1,74 @@
 {
   "entities": {
-    "UserProfile": {
-      "title": "User Profile",
-      "description": "Information about a user.",
+    "MenuItem": {
+      "title": "MenuItem",
+      "description": "A coffee shop menu item",
       "type": "object",
       "properties": {
-        "userId": { "type": "string", "description": "Auth ID of the user." },
-        "name": { "type": "string", "description": "Full name of the user." },
-        "email": { "type": "string", "description": "Email address." },
-        "createdAt": { "type": "number", "description": "Timestamp of creation." }
+        "title": { "type": "string" },
+        "origin": { "type": "string" },
+        "process": { "type": "string" },
+        "price": { "type": "string" },
+        "desc": { "type": "string" },
+        "img": { "type": "string" },
+        "delay": { "type": "string" },
+        "category": { "type": "string", "enum": ["espresso", "pourOver", "coldBrew", "pastries"] }
       },
-      "required": ["userId", "name", "createdAt"]
+      "required": ["title", "origin", "process", "price", "desc", "img", "delay", "category"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "Customer order",
+      "type": "object",
+      "properties": {
+        "customerName": { "type": "string" },
+        "itemsSummary": { "type": "string" },
+        "totalPrice": { "type": "string" },
+        "status": { "type": "string", "enum": ["PENDING", "ROASTING", "READY", "DELIVERED"] },
+        "priority": { "type": "string", "enum": ["NORMAL", "URGENT"] }
+      },
+      "required": ["customerName", "itemsSummary", "totalPrice", "status", "priority"]
+    },
+    "User": {
+      "title": "User",
+      "description": "User profile with role",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "role": { "type": "string", "enum": ["ADMIN", "USER"] },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["userId", "name", "email", "createdAt"]
+    },
+    "WishlistItem": {
+      "title": "WishlistItem",
+      "description": "An item saved to a user's wishlist",
+      "type": "object",
+      "properties": {
+        "itemId": { "type": "string" },
+        "addedAt": { "type": "number" }
+      },
+      "required": ["itemId", "addedAt"]
     }
   },
   "firestore": {
+    "/menuItems/{menuItemId}": {
+      "schema": { "$ref": "#/entities/MenuItem" },
+      "description": "Menu items collection"
+    },
+    "/orders/{orderId}": {
+      "schema": { "$ref": "#/entities/Order" },
+      "description": "Orders collection"
+    },
     "/users/{userId}": {
-      "schema": { "$ref": "#/entities/UserProfile" },
-      "description": "User profiles stored by their uid."
+      "schema": { "$ref": "#/entities/User" },
+      "description": "Users collection"
+    },
+    "/users/{userId}/wishlist/{itemId}": {
+      "schema": { "$ref": "#/entities/WishlistItem" },
+      "description": "User's wishlist"
     }
   }
 }

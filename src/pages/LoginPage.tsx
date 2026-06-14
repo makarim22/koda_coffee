@@ -1,9 +1,9 @@
 import { BaseProps } from '../types';
 import React, { useState } from 'react';
 import TopNavBar from '../components/TopNavBar';
-import { loginUser } from '../auth';
+import { loginUser, registerUser } from '../auth';
 
-export default function LoginPage({ onNavigate }: BaseProps) {
+export default function LoginPage({ onNavigate, cart }: BaseProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -15,8 +15,17 @@ export default function LoginPage({ onNavigate }: BaseProps) {
     setError('');
     setIsLoading(true);
     try {
+      if (email === 'admin@koda.com' && password === 'admin123') {
+        try {
+          await loginUser(email, password);
+        } catch (err) {
+          await registerUser('Admin', email, password);
+        }
+        onNavigate('admin');
+        return;
+      }
       await loginUser(email, password);
-      onNavigate('landing');
+      onNavigate('user-dashboard');
     } catch (err: any) {
       setError(err.message || 'Failed to login.');
     } finally {
@@ -30,7 +39,7 @@ export default function LoginPage({ onNavigate }: BaseProps) {
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60rem] h-[60rem] rounded-full bg-[#e8e4d8] -z-10 opacity-70 blur-3xl mix-blend-multiply"></div>
 
       <div className="fixed top-0 w-full z-50">
-        <TopNavBar onNavigate={onNavigate} activeRoute="login" />
+        <TopNavBar onNavigate={onNavigate} activeRoute="login" cart={cart} />
       </div>
 
       <div className="w-full max-w-7xl mx-auto px-6 md:px-12 flex flex-col items-center justify-center z-10 py-24 min-h-screen pt-32">
@@ -40,6 +49,10 @@ export default function LoginPage({ onNavigate }: BaseProps) {
           <div className="mb-16 text-center fade-in-up">
             <h1 className="text-5xl font-bold italic mb-6">Sign In</h1>
             <p className="font-sans text-xs tracking-widest opacity-70">Enter your details to access your roasts.</p>
+            <div className="font-sans text-[10px] uppercase opacity-50 mt-4 border border-[#1a1a1a]/10 p-2 rounded bg-white flex flex-col gap-1 items-center">
+              <span>Admin email: <span className="font-bold">admin@koda.com</span></span>
+              <span>Password: <span className="font-bold">admin123</span></span>
+            </div>
           </div>
 
           <form className="space-y-12 fade-in-up delay-100" onSubmit={handleSubmit}>

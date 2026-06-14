@@ -1,5 +1,6 @@
 import { BaseProps } from '../types';
 import TopNavBar from '../components/TopNavBar';
+import Footer from '../components/Footer';
 import { APIProvider, Map, AdvancedMarker, Pin } from '@vis.gl/react-google-maps';
 
 const API_KEY =
@@ -9,11 +10,11 @@ const API_KEY =
   '';
 const hasValidKey = Boolean(API_KEY) && API_KEY !== 'YOUR_API_KEY';
 
-export default function CafesPage({ onNavigate }: BaseProps) {
+export default function CafesPage({ onNavigate, cart }: BaseProps) {
   return (
     <div className="bg-[#fcf8f7] text-[#000000] font-['Outfit'] selection:bg-[#9d4300] selection:text-white min-h-screen flex flex-col relative overflow-hidden">
       
-      <TopNavBar onNavigate={onNavigate} activeRoute="cafes" />
+      <TopNavBar onNavigate={onNavigate} activeRoute="cafes" cart={cart} />
       
       <main className="flex flex-col lg:flex-row flex-1 pt-12 px-6 md:px-12 max-w-[1400px] mx-auto w-full gap-12 lg:gap-20 z-10 pb-24">
         {/* Left Panel: Cafe List */}
@@ -143,25 +144,7 @@ export default function CafesPage({ onNavigate }: BaseProps) {
         </section>
       </main>
 
-      <footer className="bg-[#fcf8f7] py-16 mt-auto">
-        <div className="max-w-[1400px] mx-auto px-6 md:px-12 lg:px-20 flex flex-col md:flex-row items-center justify-between gap-8 pt-8 border-t border-slate-200/60">
-          <div 
-            onClick={() => onNavigate('landing')}
-            className="text-2xl font-extrabold tracking-tighter cursor-pointer"
-          >
-            Koda
-          </div>
-          <div className="flex flex-wrap items-center justify-center gap-8 font-semibold text-[11px] uppercase tracking-widest text-[#9d4300]/60">
-            <a href="#" className="hover:text-[#9d4300] transition-colors">Sustainability</a>
-            <a href="#" className="hover:text-[#9d4300] transition-colors">Wholesale</a>
-            <a href="#" className="hover:text-[#9d4300] transition-colors">Careers</a>
-            <a href="#" className="hover:text-[#9d4300] transition-colors">Privacy</a>
-          </div>
-          <div className="text-[11px] font-medium text-slate-400">
-            © 2024 Koda Coffee Roasters. Ethically sourced, editorial by design.
-          </div>
-        </div>
-      </footer>
+      <Footer onNavigate={onNavigate} />
     </div>
   );
 }
